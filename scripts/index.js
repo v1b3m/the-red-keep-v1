@@ -114,12 +114,33 @@ prevBtn.addEventListener("click", () => {
   updateSlider();
 });
 
-// Booking Form
+// Booking Form - WhatsApp redirect
 document.getElementById("bookingForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  alert(
-    "Thank you for your inquiry! We will check availability and contact you shortly.",
-  );
+  const form = e.target;
+  const inputs = form.querySelectorAll("input[type='date']");
+  const selects = form.querySelectorAll("select");
+  const textarea = form.querySelector("textarea");
+
+  const checkIn = inputs[0]?.value || "Not specified";
+  const checkOut = inputs[1]?.value || "Not specified";
+  const guests = selects[0]?.value || "Not specified";
+  const roomType = selects[1]?.value || "Not specified";
+  const specialRequests = textarea?.value?.trim();
+
+  let message = "Hello! I'd like to check availability at The Red Keep.\n\n";
+  message += `*Room:* ${roomType}\n`;
+  message += `*Check-in:* ${checkIn}\n`;
+  message += `*Check-out:* ${checkOut}\n`;
+  message += `*Guests:* ${guests}\n`;
+  if (specialRequests) {
+    message += `\n*Special Requests:*\n${specialRequests}\n`;
+  }
+  message += "\nLooking forward to your response!";
+
+  const phone = "256703755919";
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
 });
 
 // Magnetic Button Effect

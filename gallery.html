@@ -61,7 +61,7 @@
 
     <nav
       id="navbar"
-      class="fixed w-full z-50 transition-all duration-500 nav-hidden bg-charcoal/90 backdrop-blur-md border-b border-white/10"
+      class="fixed w-full z-50 transition-all duration-500 nav-visible bg-charcoal/90 backdrop-blur-md border-b border-white/10"
     >
       <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <a
@@ -101,15 +101,15 @@
           id="menuBtn"
           class="md:hidden w-10 h-10 flex flex-col justify-center items-center space-y-1.5"
         >
-          <span class="w-6 h-0.5 bg-cream transition-all"></span>
-          <span class="w-6 h-0.5 bg-cream transition-all"></span>
+          <span class="w-6 h-0.5 transition-all"></span>
+          <span class="w-6 h-0.5 transition-all"></span>
         </button>
       </div>
     </nav>
 
     <div
       id="mobileMenu"
-      class="mobile-menu fixed inset-0 bg-charcoal z-40 flex flex-col items-center justify-center space-y-8 md:hidden"
+      class="mobile-menu fixed inset-0 z-40 flex flex-col items-center justify-center space-y-8 md:hidden" style="background-color: var(--charcoal)"
     >
       <a
         href="index.html"
@@ -131,7 +131,7 @@
         class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
         >Experiences</a
       >
-      <a href="gallery.html" class="text-3xl font-serif text-terracotta">Gallery</a>
+      <a href="gallery.html" class="text-3xl font-serif active-link">Gallery</a>
       <button
         onclick="window.location.href = 'index.html#booking'"
         class="mt-8 px-8 py-4 border border-terracotta text-terracotta text-lg tracking-widest uppercase"
@@ -251,7 +251,7 @@
           Where East African heritage meets contemporary luxury
         </p>
         <p class="text-earth/60 text-sm">
-          &copy; 2024 The Red Keep. All rights reserved.
+          &copy; 2026 The Red Keep. All rights reserved.
         </p>
       </div>
     </footer>

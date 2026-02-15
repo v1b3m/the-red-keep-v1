@@ -77,6 +77,42 @@ body {
   clip-path: circle(150% at calc(100% - 40px) 40px);
 }
 
+/* Hamburger icon default color */
+#menuBtn span {
+  background-color: var(--charcoal);
+}
+
+/* Navbar when mobile menu is open */
+nav.menu-open {
+  background-color: var(--charcoal) !important;
+  border-color: transparent !important;
+}
+
+nav.menu-open a {
+  color: var(--cream) !important;
+}
+
+nav.menu-open #menuBtn span {
+  background-color: var(--cream) !important;
+}
+
+.mobile-menu a {
+  color: var(--cream);
+}
+
+.mobile-menu a:hover {
+  color: var(--terracotta);
+}
+
+.mobile-menu a.active-link {
+  color: var(--terracotta);
+}
+
+.mobile-menu button {
+  color: var(--terracotta);
+  border-color: var(--terracotta);
+}
+
 /* Loading Screen */
 .loader {
   position: fixed;

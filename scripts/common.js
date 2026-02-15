@@ -24,12 +24,18 @@ const navbar = document.getElementById("navbar");
 window.addEventListener("scroll", () => {
   const currentScroll = window.pageYOffset;
 
-  if (currentScroll > 100) {
+  if (currentScroll <= 0) {
+    // At the very top — always show navbar
     navbar.classList.remove("nav-hidden");
     navbar.classList.add("nav-visible");
-  } else {
+  } else if (currentScroll > lastScroll) {
+    // Scrolling down — hide navbar
     navbar.classList.add("nav-hidden");
     navbar.classList.remove("nav-visible");
+  } else {
+    // Scrolling up — show navbar
+    navbar.classList.remove("nav-hidden");
+    navbar.classList.add("nav-visible");
   }
 
   lastScroll = currentScroll;
@@ -64,10 +70,14 @@ function toggleMobileMenu() {
   menuOpen = !menuOpen;
   if (menuOpen) {
     mobileMenu.classList.add("active");
+    navbar.classList.add("menu-open");
+    document.body.style.overflow = "hidden";
     menuBtn.children[0].style.transform = "rotate(45deg) translate(5px, 5px)";
     menuBtn.children[1].style.transform = "rotate(-45deg) translate(0px, 0px)";
   } else {
     mobileMenu.classList.remove("active");
+    navbar.classList.remove("menu-open");
+    document.body.style.overflow = "";
     menuBtn.children[0].style.transform = "none";
     menuBtn.children[1].style.transform = "none";
   }

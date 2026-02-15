@@ -165,9 +165,31 @@ document.getElementById("roomSelect").addEventListener("change", updateSummary);
 
 document.getElementById("bookingForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  alert(
-    "Thank you for your reservation request! We will confirm availability within 24 hours.",
-  );
+  const form = e.target;
+  const inputs = form.querySelectorAll("input[type='date']");
+  const roomSelect = document.getElementById("roomSelect");
+  const guestsSelect = form.querySelectorAll("select")[1];
+  const textarea = form.querySelector("textarea");
+
+  const checkIn = inputs[0]?.value || "Not specified";
+  const checkOut = inputs[1]?.value || "Not specified";
+  const roomType = roomSelect?.options[roomSelect.selectedIndex]?.text || "Not specified";
+  const guests = guestsSelect?.value || "Not specified";
+  const specialRequests = textarea?.value?.trim();
+
+  let message = "Hello! I'd like to book a room at The Red Keep.\n\n";
+  message += `*Room:* ${roomType}\n`;
+  message += `*Check-in:* ${checkIn}\n`;
+  message += `*Check-out:* ${checkOut}\n`;
+  message += `*Guests:* ${guests}\n`;
+  if (specialRequests) {
+    message += `\n*Special Requests:*\n${specialRequests}\n`;
+  }
+  message += "\nLooking forward to your response!";
+
+  const phone = "256703755919";
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
 });
 
 function scrollToBooking() {
