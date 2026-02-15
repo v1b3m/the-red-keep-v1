@@ -1,0 +1,1069 @@
+<!-- rooms.html - Rooms & Accommodation Page -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms & Suites | The Red Keep - Kampala, Uganda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --terracotta: #c65d3b;
+        --terracotta-dark: #a64b2e;
+        --ochre: #d4a373;
+        --sage: #8a9a5b;
+        --cream: #f5f1e8;
+        --charcoal: #2c2420;
+        --earth: #5c4a3d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: var(--cream);
+        color: var(--charcoal);
+        overflow-x: hidden;
+      }
+
+      .font-serif {
+        font-family: "Cormorant Garamond", serif;
+      }
+
+      .grain-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      .custom-cursor {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--terracotta);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition:
+          transform 0.2s,
+          background 0.2s;
+        mix-blend-mode: difference;
+      }
+
+      .custom-cursor.hover {
+        transform: scale(2);
+        background: var(--terracotta);
+      }
+
+      .nav-hidden {
+        transform: translateY(-100%);
+      }
+      .nav-visible {
+        transform: translateY(0);
+      }
+
+      .room-card {
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .room-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .room-image-container {
+        overflow: hidden;
+        position: relative;
+      }
+
+      .room-image {
+        transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .room-card:hover .room-image {
+        transform: scale(1.1);
+      }
+
+      .amenity-icon {
+        transition: all 0.3s;
+      }
+
+      .amenity-icon:hover {
+        color: var(--terracotta);
+        transform: translateY(-3px);
+      }
+
+      .booking-panel {
+        backdrop-filter: blur(20px);
+        background: rgba(245, 241, 232, 0.95);
+        border-left: 1px solid rgba(198, 93, 59, 0.2);
+      }
+
+      .date-input {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid var(--charcoal);
+        padding: 8px 0;
+        width: 100%;
+        font-family: "Montserrat", sans-serif;
+        transition: border-color 0.3s;
+      }
+
+      .date-input:focus {
+        outline: none;
+        border-color: var(--terracotta);
+      }
+
+      .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--charcoal);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .loader-text {
+        color: var(--cream);
+        font-size: 2rem;
+        letter-spacing: 0.5em;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .mobile-menu {
+        clip-path: circle(0% at calc(100% - 40px) 40px);
+        transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .mobile-menu.active {
+        clip-path: circle(150% at calc(100% - 40px) 40px);
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(44, 36, 32, 0.1);
+      }
+
+      .comparison-table th {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.25rem;
+        color: var(--charcoal);
+      }
+
+      .check-mark {
+        color: var(--sage);
+        font-weight: bold;
+      }
+
+      .gallery-thumb {
+        cursor: pointer;
+        transition: all 0.3s;
+        opacity: 0.6;
+      }
+
+      .gallery-thumb:hover,
+      .gallery-thumb.active {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .lightbox.active {
+        display: flex;
+      }
+
+      .sticky-booking {
+        position: sticky;
+        top: 100px;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="loader" id="loader">
+      <div class="loader-text font-serif">THE RED KEEP</div>
+    </div>
+
+    <div class="grain-overlay"></div>
+    <div class="custom-cursor hidden md:block" id="cursor"></div>
+
+    <!-- Navigation -->
+    <nav
+      id="navbar"
+      class="fixed w-full z-50 transition-all duration-500 nav-hidden bg-cream/90 backdrop-blur-md border-b border-stone-200"
+    >
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a
+          href="index.html"
+          class="text-2xl font-serif font-bold tracking-widest text-charcoal hover:text-terracotta transition-colors"
+          >THE RED KEEP</a
+        >
+
+        <div class="hidden md:flex items-center space-x-8">
+          <a
+            href="rooms.html"
+            class="text-sm tracking-widest text-terracotta uppercase"
+            >Rooms</a
+          >
+          <a
+            href="menu.html"
+            class="text-sm tracking-widest hover:text-terracotta transition-colors uppercase"
+            >Menu</a
+          >
+          <a
+            href="experiences.html"
+            class="text-sm tracking-widest hover:text-terracotta transition-colors uppercase"
+            >Experiences</a
+          >
+          <a
+            href="gallery.html"
+            class="text-sm tracking-widest hover:text-terracotta transition-colors uppercase"
+            >Gallery</a
+          >
+          <button
+            onclick="scrollToBooking()"
+            class="px-6 py-3 bg-terracotta text-white text-sm tracking-widest uppercase hover:bg-terracotta-dark transition-colors"
+          >
+            Book Now
+          </button>
+        </div>
+
+        <button
+          id="menuBtn"
+          class="md:hidden w-10 h-10 flex flex-col justify-center items-center space-y-1.5"
+        >
+          <span class="w-6 h-0.5 bg-charcoal transition-all"></span>
+          <span class="w-6 h-0.5 bg-charcoal transition-all"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div
+      id="mobileMenu"
+      class="mobile-menu fixed inset-0 bg-charcoal z-40 flex flex-col items-center justify-center space-y-8 md:hidden"
+    >
+      <a
+        href="index.html"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Home</a
+      >
+      <a href="rooms.html" class="text-3xl font-serif text-terracotta">Rooms</a>
+      <a
+        href="menu.html"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Menu</a
+      >
+      <a
+        href="experiences.html"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Experiences</a
+      >
+      <a
+        href="gallery.html"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Gallery</a
+      >
+      <button
+        onclick="scrollToBooking()"
+        class="mt-8 px-8 py-4 border border-terracotta text-terracotta text-lg tracking-widest uppercase"
+      >
+        Book Now
+      </button>
+    </div>
+
+    <!-- Hero -->
+    <section class="relative h-[80vh] w-full overflow-hidden bg-charcoal">
+      <div class="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1920&q=80"
+          alt="Luxury Room"
+          class="w-full h-full object-cover opacity-60"
+          id="heroImage"
+        />
+      </div>
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-transparent to-cream"
+      ></div>
+
+      <div
+        class="relative z-10 h-full flex flex-col justify-center items-center text-center px-6"
+      >
+        <p class="text-ochre text-sm tracking-[0.3em] uppercase mb-4">
+          Accommodations
+        </p>
+        <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl text-cream mb-6">
+          SANCTUARY
+        </h1>
+        <p class="text-cream/80 text-lg md:text-xl max-w-2xl font-light">
+          Twelve unique rooms, each a private retreat with views of Kampala's seven
+          hills
+        </p>
+      </div>
+    </section>
+
+    <!-- Room Types Grid -->
+    <section class="py-24 px-6 bg-cream">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <span class="text-terracotta text-sm tracking-widest uppercase"
+            >Choose Your Stay</span
+          >
+          <h2 class="font-serif text-5xl md:text-6xl text-charcoal mt-4">
+            Our Rooms
+          </h2>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8 mb-24">
+          <!-- Hill View Suite -->
+          <div class="room-card bg-white rounded-sm overflow-hidden shadow-lg">
+            <div class="room-image-container h-80 relative">
+              <img
+                src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80"
+                alt="Hill View Suite"
+                class="room-image w-full h-full object-cover"
+              />
+              <div
+                class="absolute top-4 right-4 bg-terracotta text-white px-4 py-2 text-sm tracking-widest"
+              >
+                POPULAR
+              </div>
+            </div>
+            <div class="p-8">
+              <h3 class="font-serif text-3xl text-charcoal mb-2">Hill View Suite</h3>
+              <p class="text-earth mb-4">King bed • Valley view • 45m²</p>
+              <div class="flex gap-4 mb-6 text-earth">
+                <span class="amenity-icon text-xl" title="WiFi">📶</span>
+                <span class="amenity-icon text-xl" title="AC">❄️</span>
+                <span class="amenity-icon text-xl" title="TV">📺</span>
+                <span class="amenity-icon text-xl" title="Mini Bar">🍷</span>
+                <span class="amenity-icon text-xl" title="Bathtub">🛁</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="text-3xl font-serif text-terracotta">$180</span>
+                  <span class="text-earth text-sm">/ night</span>
+                </div>
+                <button
+                  onclick="selectRoom('hill-view')"
+                  class="px-6 py-3 border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-cream transition-all uppercase text-sm tracking-widest"
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Garden Pavilion -->
+          <div
+            class="room-card bg-white rounded-sm overflow-hidden shadow-lg mt-0 lg:mt-12"
+          >
+            <div class="room-image-container h-80 relative">
+              <img
+                src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80"
+                alt="Garden Pavilion"
+                class="room-image w-full h-full object-cover"
+              />
+            </div>
+            <div class="p-8">
+              <h3 class="font-serif text-3xl text-charcoal mb-2">Garden Pavilion</h3>
+              <p class="text-earth mb-4">Queen bed • Private garden • 38m²</p>
+              <div class="flex gap-4 mb-6 text-earth">
+                <span class="amenity-icon text-xl" title="WiFi">📶</span>
+                <span class="amenity-icon text-xl" title="AC">❄️</span>
+                <span class="amenity-icon text-xl" title="Garden Access">🌿</span>
+                <span class="amenity-icon text-xl" title="Outdoor Shower">🚿</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="text-3xl font-serif text-terracotta">$145</span>
+                  <span class="text-earth text-sm">/ night</span>
+                </div>
+                <button
+                  onclick="selectRoom('garden')"
+                  class="px-6 py-3 border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-cream transition-all uppercase text-sm tracking-widest"
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terracotta Loft -->
+          <div class="room-card bg-white rounded-sm overflow-hidden shadow-lg">
+            <div class="room-image-container h-80 relative">
+              <img
+                src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80"
+                alt="Terracotta Loft"
+                class="room-image w-full h-full object-cover"
+              />
+            </div>
+            <div class="p-8">
+              <h3 class="font-serif text-3xl text-charcoal mb-2">Terracotta Loft</h3>
+              <p class="text-earth mb-4">Twin beds • City view • 35m²</p>
+              <div class="flex gap-4 mb-6 text-earth">
+                <span class="amenity-icon text-xl" title="WiFi">📶</span>
+                <span class="amenity-icon text-xl" title="AC">❄️</span>
+                <span class="amenity-icon text-xl" title="Work Desk">💼</span>
+                <span class="amenity-icon text-xl" title="City View">🏙️</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="text-3xl font-serif text-terracotta">$120</span>
+                  <span class="text-earth text-sm">/ night</span>
+                </div>
+                <button
+                  onclick="selectRoom('loft')"
+                  class="px-6 py-3 border-2 border-charcoal text-charcoal hover:bg-charcoal hover:text-cream transition-all uppercase text-sm tracking-widest"
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Room View (Hidden by default, shown via JS) -->
+        <div id="roomDetails" class="hidden mb-24">
+          <div class="grid lg:grid-cols-2 gap-12 bg-white p-8 rounded-sm shadow-xl">
+            <div>
+              <div
+                class="relative h-96 mb-4 overflow-hidden rounded-sm"
+                id="mainImageContainer"
+              >
+                <img
+                  id="mainRoomImage"
+                  src=""
+                  alt=""
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="grid grid-cols-4 gap-2" id="thumbGallery">
+                <!-- Thumbnails injected via JS -->
+              </div>
+            </div>
+            <div class="flex flex-col justify-center">
+              <h3
+                id="detailTitle"
+                class="font-serif text-4xl text-charcoal mb-4"
+              ></h3>
+              <p id="detailDesc" class="text-earth leading-relaxed mb-6"></p>
+
+              <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">📐</span>
+                  <span id="detailSize" class="text-earth"></span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">👥</span>
+                  <span id="detailGuests" class="text-earth"></span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🛏️</span>
+                  <span id="detailBed" class="text-earth"></span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🌅</span>
+                  <span id="detailView" class="text-earth"></span>
+                </div>
+              </div>
+
+              <div class="mb-8">
+                <h4 class="font-serif text-xl mb-4">Amenities</h4>
+                <div
+                  class="grid grid-cols-2 gap-3 text-sm text-earth"
+                  id="detailAmenities"
+                >
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <div
+                class="flex items-center justify-between pt-6 border-t border-stone-200"
+              >
+                <div>
+                  <span
+                    id="detailPrice"
+                    class="text-4xl font-serif text-terracotta"
+                  ></span>
+                  <span class="text-earth">/ night</span>
+                </div>
+                <button
+                  onclick="scrollToBooking()"
+                  class="px-8 py-4 bg-terracotta text-white uppercase tracking-widest hover:bg-terracotta-dark transition-colors"
+                >
+                  Book This Room
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="overflow-x-auto">
+          <h3 class="font-serif text-3xl text-charcoal mb-8 text-center">
+            Room Comparison
+          </h3>
+          <table
+            class="comparison-table w-full bg-white rounded-sm shadow-lg overflow-hidden"
+          >
+            <thead class="bg-stone-100">
+              <tr>
+                <th>Feature</th>
+                <th>Hill View Suite</th>
+                <th>Garden Pavilion</th>
+                <th>Terracotta Loft</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-medium">Size</td>
+                <td>45 m²</td>
+                <td>38 m²</td>
+                <td>35 m²</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Bed</td>
+                <td>King</td>
+                <td>Queen</td>
+                <td>Twin or King</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Private Terrace</td>
+                <td class="check-mark">✓</td>
+                <td class="check-mark">✓ Garden</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Bathtub</td>
+                <td class="check-mark">✓</td>
+                <td>Outdoor Shower</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Mini Bar</td>
+                <td class="check-mark">✓ Premium</td>
+                <td class="check-mark">✓ Standard</td>
+                <td class="check-mark">✓ Standard</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Breakfast Included</td>
+                <td class="check-mark">✓</td>
+                <td class="check-mark">✓</td>
+                <td class="check-mark">✓</td>
+              </tr>
+              <tr class="bg-stone-50">
+                <td class="font-medium">Starting Price</td>
+                <td class="text-terracotta font-bold">$180</td>
+                <td class="text-terracotta font-bold">$145</td>
+                <td class="text-terracotta font-bold">$120</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="py-24 px-6 bg-stone-100">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid lg:grid-cols-3 gap-12">
+          <div class="lg:col-span-2">
+            <span class="text-terracotta text-sm tracking-widest uppercase"
+              >Reservations</span
+            >
+            <h2 class="font-serif text-5xl text-charcoal mt-4 mb-8">
+              Book Your Stay
+            </h2>
+
+            <form id="bookingForm" class="space-y-6">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-xs tracking-widest uppercase text-earth mb-2"
+                    >Check In</label
+                  >
+                  <input type="date" class="date-input text-charcoal" required />
+                </div>
+                <div>
+                  <label
+                    class="block text-xs tracking-widest uppercase text-earth mb-2"
+                    >Check Out</label
+                  >
+                  <input type="date" class="date-input text-charcoal" required />
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-xs tracking-widest uppercase text-earth mb-2"
+                    >Room Type</label
+                  >
+                  <select
+                    id="roomSelect"
+                    class="date-input text-charcoal bg-transparent"
+                  >
+                    <option value="hill-view">Hill View Suite - $180/night</option>
+                    <option value="garden">Garden Pavilion - $145/night</option>
+                    <option value="loft">Terracotta Loft - $120/night</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    class="block text-xs tracking-widest uppercase text-earth mb-2"
+                    >Guests</label
+                  >
+                  <select class="date-input text-charcoal bg-transparent">
+                    <option>1 Guest</option>
+                    <option selected>2 Guests</option>
+                    <option>3 Guests</option>
+                    <option>4 Guests</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs tracking-widest uppercase text-earth mb-2"
+                  >Special Requests</label
+                >
+                <textarea
+                  rows="4"
+                  class="w-full bg-transparent border-b-2 border-charcoal focus:border-terracotta focus:outline-none py-2 resize-none"
+                  placeholder="Dietary requirements, celebrations, room preferences..."
+                ></textarea>
+              </div>
+
+              <div class="flex items-center gap-4 pt-4">
+                <input
+                  type="checkbox"
+                  id="newsletter"
+                  class="w-5 h-5 accent-terracotta"
+                />
+                <label for="newsletter" class="text-earth text-sm"
+                  >Subscribe to our newsletter for special offers</label
+                >
+              </div>
+
+              <button
+                type="submit"
+                class="w-full py-4 bg-terracotta text-white uppercase tracking-widest hover:bg-terracotta-dark transition-colors mt-6"
+              >
+                Check Availability
+              </button>
+            </form>
+          </div>
+
+          <div class="sticky-booking">
+            <div class="bg-white p-8 rounded-sm shadow-lg">
+              <h3 class="font-serif text-2xl text-charcoal mb-6">Booking Summary</h3>
+              <div class="space-y-4 mb-6 pb-6 border-b border-stone-200">
+                <div class="flex justify-between text-earth">
+                  <span>Room Rate</span>
+                  <span id="summaryRate">$180/night</span>
+                </div>
+                <div class="flex justify-between text-earth">
+                  <span>Nights</span>
+                  <span id="summaryNights">2</span>
+                </div>
+                <div class="flex justify-between text-earth">
+                  <span>Taxes (18%)</span>
+                  <span id="summaryTax">$64.80</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-earth uppercase tracking-widest text-sm"
+                  >Total</span
+                >
+                <span id="summaryTotal" class="text-3xl font-serif text-terracotta"
+                  >$424.80</span
+                >
+              </div>
+              <p class="text-xs text-earth mt-4 text-center">
+                Free cancellation up to 24 hours before check-in
+              </p>
+            </div>
+
+            <div class="mt-6 bg-charcoal text-cream p-6 rounded-sm">
+              <h4 class="font-serif text-xl mb-2">Need Help?</h4>
+              <p class="text-sm text-cream/70 mb-4">
+                Our reservations team is available 24/7
+              </p>
+              <a
+                href="tel:+256123456789"
+                class="text-2xl font-serif hover:text-terracotta transition-colors"
+                >+256 123 456 789</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Policies -->
+    <section class="py-16 px-6 bg-cream border-t border-stone-200">
+      <div class="max-w-4xl mx-auto">
+        <h3 class="font-serif text-3xl text-charcoal mb-8 text-center">
+          Hotel Policies
+        </h3>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="flex gap-4">
+            <span class="text-3xl">🕐</span>
+            <div>
+              <h4 class="font-medium text-charcoal mb-1">Check-in/Check-out</h4>
+              <p class="text-earth text-sm">
+                Check-in: 2:00 PM | Check-out: 11:00 AM. Early check-in available upon
+                request.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <span class="text-3xl">🐕</span>
+            <div>
+              <h4 class="font-medium text-charcoal mb-1">Pet Policy</h4>
+              <p class="text-earth text-sm">
+                Pets welcome in Garden Pavilions only. $25/night fee applies.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <span class="text-3xl">🚬</span>
+            <div>
+              <h4 class="font-medium text-charcoal mb-1">Smoking</h4>
+              <p class="text-earth text-sm">
+                All rooms are non-smoking. Designated outdoor areas available.
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <span class="text-3xl">👶</span>
+            <div>
+              <h4 class="font-medium text-charcoal mb-1">Children</h4>
+              <p class="text-earth text-sm">
+                Children under 12 stay free in parents' room. Cribs available on
+                request.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-cream py-16 px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+          <div class="md:col-span-2">
+            <h3 class="font-serif text-3xl mb-4">THE RED KEEP</h3>
+            <p class="text-cream/60 max-w-md">
+              A boutique motel and restaurant in the heart of Kampala, offering
+              authentic Ugandan hospitality with contemporary luxury.
+            </p>
+          </div>
+          <div>
+            <h4 class="text-sm tracking-widest uppercase mb-4 text-terracotta">
+              Contact
+            </h4>
+            <p class="text-cream/60 text-sm leading-relaxed">
+              Plot 42, Nakasero Road<br />
+              Kampala, Uganda<br />
+              +256 123 456 789
+            </p>
+          </div>
+          <div>
+            <h4 class="text-sm tracking-widest uppercase mb-4 text-terracotta">
+              Follow Us
+            </h4>
+            <div class="flex gap-4">
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full border border-cream/30 flex items-center justify-center hover:bg-terracotta hover:border-terracotta transition-all"
+                >IG</a
+              >
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full border border-cream/30 flex items-center justify-center hover:bg-terracotta hover:border-terracotta transition-all"
+                >FB</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-cream/10 pt-8 text-center text-cream/40 text-sm">
+          &copy; 2024 The Red Keep. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+
+      const roomData = {
+        "hill-view": {
+          title: "Hill View Suite",
+          desc: "Our flagship suite offers panoramic views of Kampala's rolling hills from your private terrace. Features a luxurious king bed, deep soaking tub, and premium finishes throughout. Perfect for romantic getaways or special occasions.",
+          size: "45 m²",
+          guests: "2 Adults",
+          bed: "King Size",
+          view: "Valley & Hills",
+          price: "$180",
+          images: [
+            "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",
+            "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80",
+            "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
+            "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80",
+          ],
+          amenities: [
+            "Premium WiFi",
+            "Smart TV",
+            "Mini Bar",
+            "Coffee Machine",
+            "Bathtub",
+            "Private Terrace",
+            "Room Service",
+            "Air Conditioning",
+            "Safe",
+            "Hair Dryer",
+          ],
+        },
+        garden: {
+          title: "Garden Pavilion",
+          desc: "Immerse yourself in nature with direct access to our lush tropical gardens. This ground-floor pavilion features an outdoor shower, private patio, and queen bed draped in locally woven textiles.",
+          size: "38 m²",
+          guests: "2 Adults",
+          bed: "Queen Size",
+          view: "Private Garden",
+          price: "$145",
+          images: [
+            "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80",
+            "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80",
+            "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
+            "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",
+          ],
+          amenities: [
+            "Garden Access",
+            "Outdoor Shower",
+            "WiFi",
+            "TV",
+            "Mini Bar",
+            "Tea/Coffee",
+            "Air Conditioning",
+            "Safe",
+            "Desk",
+            "Mosquito Net",
+          ],
+        },
+        loft: {
+          title: "Terracotta Loft",
+          desc: "Contemporary urban design meets African warmth in our stylish loft. Ideal for business travelers or friends, featuring flexible twin bedding, city views, and a dedicated workspace.",
+          size: "35 m²",
+          guests: "2 Adults",
+          bed: "Twin or King",
+          view: "City Skyline",
+          price: "$120",
+          images: [
+            "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80",
+            "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",
+            "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80",
+            "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80",
+          ],
+          amenities: [
+            "Work Desk",
+            "High-Speed WiFi",
+            "TV",
+            "Mini Bar",
+            "Coffee/Tea",
+            "Air Conditioning",
+            "Safe",
+            "Iron/Board",
+            "Hair Dryer",
+            "City View",
+          ],
+        },
+      };
+
+      window.addEventListener("load", () => {
+        gsap.to("#loader", {
+          opacity: 0,
+          duration: 1,
+          delay: 0.5,
+          onComplete: () => {
+            document.getElementById("loader").style.display = "none";
+          },
+        });
+
+        gsap.from(".room-card", {
+          scrollTrigger: { trigger: ".room-card", start: "top 80%" },
+          y: 100,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.2,
+        });
+      });
+
+      // Navigation
+      let lastScroll = 0;
+      window.addEventListener("scroll", () => {
+        const current = window.pageYOffset;
+        const nav = document.getElementById("navbar");
+        if (current > 100) {
+          nav.classList.remove("nav-hidden");
+          nav.classList.add("nav-visible");
+        } else {
+          nav.classList.add("nav-hidden");
+          nav.classList.remove("nav-visible");
+        }
+        lastScroll = current;
+      });
+
+      // Mobile Menu
+      const menuBtn = document.getElementById("menuBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+      let menuOpen = false;
+
+      menuBtn.addEventListener("click", () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle("active");
+        menuBtn.children[0].style.transform = menuOpen
+          ? "rotate(45deg) translate(5px, 5px)"
+          : "none";
+        menuBtn.children[1].style.transform = menuOpen
+          ? "rotate(-45deg) translate(0px, 0px)"
+          : "none";
+      });
+
+      // Room Selection
+      function selectRoom(roomType) {
+        const data = roomData[roomType];
+        const details = document.getElementById("roomDetails");
+
+        document.getElementById("detailTitle").textContent = data.title;
+        document.getElementById("detailDesc").textContent = data.desc;
+        document.getElementById("detailSize").textContent = data.size;
+        document.getElementById("detailGuests").textContent = data.guests;
+        document.getElementById("detailBed").textContent = data.bed;
+        document.getElementById("detailView").textContent = data.view;
+        document.getElementById("detailPrice").textContent = data.price;
+
+        // Set main image
+        document.getElementById("mainRoomImage").src = data.images[0];
+
+        // Generate thumbnails
+        const thumbContainer = document.getElementById("thumbGallery");
+        thumbContainer.innerHTML = "";
+        data.images.forEach((img, idx) => {
+          const thumb = document.createElement("img");
+          thumb.src = img;
+          thumb.className = `gallery-thumb w-full h-20 object-cover rounded-sm ${idx === 0 ? "active" : ""}`;
+          thumb.onclick = () => {
+            document.getElementById("mainRoomImage").src = img;
+            document
+              .querySelectorAll(".gallery-thumb")
+              .forEach((t) => t.classList.remove("active"));
+            thumb.classList.add("active");
+          };
+          thumbContainer.appendChild(thumb);
+        });
+
+        // Generate amenities
+        const amenityContainer = document.getElementById("detailAmenities");
+        amenityContainer.innerHTML = "";
+        data.amenities.forEach((amenity) => {
+          const div = document.createElement("div");
+          div.className = "flex items-center gap-2";
+          div.innerHTML = `<span class="text-sage">✓</span><span>${amenity}</span>`;
+          amenityContainer.appendChild(div);
+        });
+
+        // Update select dropdown
+        document.getElementById("roomSelect").value = roomType;
+        updateSummary();
+
+        // Show details
+        details.classList.remove("hidden");
+        details.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        gsap.from(details, { opacity: 0, y: 50, duration: 0.8 });
+      }
+
+      // Booking Summary Calculator
+      function updateSummary() {
+        const roomSelect = document.getElementById("roomSelect");
+        const rate =
+          roomSelect.options[roomSelect.selectedIndex].text.match(/\$(\d+)/)[1];
+        const nights = 2; // Default
+        const subtotal = rate * nights;
+        const tax = subtotal * 0.18;
+        const total = subtotal + tax;
+
+        document.getElementById("summaryRate").textContent = `$${rate}/night`;
+        document.getElementById("summaryTax").textContent = `$${tax.toFixed(2)}`;
+        document.getElementById("summaryTotal").textContent = `$${total.toFixed(2)}`;
+      }
+
+      document.getElementById("roomSelect").addEventListener("change", updateSummary);
+
+      document.getElementById("bookingForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        alert(
+          "Thank you for your reservation request! We will confirm availability within 24 hours.",
+        );
+      });
+
+      function scrollToBooking() {
+        document.getElementById("booking").scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Custom Cursor
+      const cursor = document.getElementById("cursor");
+      if (!window.matchMedia("(pointer: coarse)").matches) {
+        document.addEventListener("mousemove", (e) => {
+          cursor.style.left = e.clientX + "px";
+          cursor.style.top = e.clientY + "px";
+        });
+        document.querySelectorAll("a, button, .room-card").forEach((el) => {
+          el.addEventListener("mouseenter", () => cursor.classList.add("hover"));
+          el.addEventListener("mouseleave", () => cursor.classList.remove("hover"));
+        });
+      }
+    </script>
+  </body>
+</html>

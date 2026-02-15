@@ -1,0 +1,1943 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu | The Red Keep Restaurant - Kampala, Uganda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --terracotta: #c65d3b;
+        --terracotta-dark: #a64b2e;
+        --ochre: #d4a373;
+        --sage: #8a9a5b;
+        --cream: #f5f1e8;
+        --charcoal: #2c2420;
+        --earth: #5c4a3d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: var(--cream);
+        color: var(--charcoal);
+        overflow-x: hidden;
+      }
+
+      .font-serif {
+        font-family: "Cormorant Garamond", serif;
+      }
+
+      /* Grain Overlay */
+      .grain-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      /* Custom Cursor */
+      .custom-cursor {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--terracotta);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition:
+          transform 0.2s,
+          background 0.2s;
+        mix-blend-mode: difference;
+      }
+
+      .custom-cursor.hover {
+        transform: scale(2);
+        background: var(--terracotta);
+      }
+
+      /* Navigation */
+      .nav-hidden {
+        transform: translateY(-100%);
+      }
+
+      .nav-visible {
+        transform: translateY(0);
+      }
+
+      /* Menu Category Tabs */
+      .menu-tab {
+        position: relative;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .menu-tab::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--terracotta);
+        transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .menu-tab.active::after,
+      .menu-tab:hover::after {
+        width: 100%;
+      }
+
+      .menu-tab.active {
+        color: var(--terracotta);
+      }
+
+      /* Menu Item Styling */
+      .menu-item {
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border-bottom: 1px solid rgba(44, 36, 32, 0.1);
+      }
+
+      .menu-item::before {
+        content: "";
+        position: absolute;
+        left: -20px;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: var(--terracotta);
+        transform: scaleY(0);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .menu-item:hover {
+        padding-left: 20px;
+        background: rgba(198, 93, 59, 0.03);
+      }
+
+      .menu-item:hover::before {
+        transform: scaleY(1);
+      }
+
+      .menu-item:hover .item-name {
+        color: var(--terracotta);
+      }
+
+      .menu-item:hover .item-price {
+        transform: scale(1.1);
+      }
+
+      .item-price {
+        transition: transform 0.3s;
+        display: inline-block;
+      }
+
+      /* Dietary Badges */
+      .dietary-badge {
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        padding: 2px 8px;
+        border: 1px solid currentColor;
+        border-radius: 12px;
+        margin-left: 8px;
+        font-weight: 600;
+      }
+
+      .badge-vg {
+        color: var(--sage);
+        border-color: var(--sage);
+      }
+      .badge-v {
+        color: var(--ochre);
+        border-color: var(--ochre);
+      }
+      .badge-gf {
+        color: var(--terracotta);
+        border-color: var(--terracotta);
+      }
+
+      /* Wine List Styling */
+      .wine-origin {
+        font-style: italic;
+        color: var(--earth);
+        font-size: 0.9rem;
+      }
+
+      /* Cocktail Card */
+      .cocktail-card {
+        background: linear-gradient(
+          135deg,
+          rgba(198, 93, 59, 0.05) 0%,
+          rgba(212, 163, 115, 0.05) 100%
+        );
+        border: 1px solid rgba(198, 93, 59, 0.2);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .cocktail-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(44, 36, 32, 0.1);
+        border-color: var(--terracotta);
+      }
+
+      /* Parallax Hero */
+      .hero-parallax {
+        transform: translateY(0);
+        will-change: transform;
+      }
+
+      /* Text Reveal Animation */
+      .reveal-text {
+        clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+      }
+
+      .reveal-text.revealed {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Section Transition */
+      .menu-section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        display: none;
+      }
+
+      .menu-section.active {
+        opacity: 1;
+        transform: translateY(0);
+        display: block;
+      }
+
+      /* Price Animation */
+      @keyframes pricePulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .price-highlight {
+        animation: pricePulse 2s infinite;
+      }
+
+      /* Mobile Menu */
+      .mobile-menu {
+        clip-path: circle(0% at calc(100% - 40px) 40px);
+        transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .mobile-menu.active {
+        clip-path: circle(150% at calc(100% - 40px) 40px);
+      }
+
+      /* Scroll Progress */
+      .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--terracotta);
+        z-index: 10001;
+        transform-origin: left;
+        transform: scaleX(0);
+      }
+
+      /* Loading Screen */
+      .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--charcoal);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .loader-text {
+        color: var(--cream);
+        font-size: 2rem;
+        letter-spacing: 0.5em;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* Sticky Category Nav */
+      .sticky-nav {
+        position: sticky;
+        top: 80px;
+        z-index: 40;
+        backdrop-filter: blur(10px);
+        background: rgba(245, 241, 232, 0.9);
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+      <div class="loader-text font-serif">THE RED KEEP</div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Grain Overlay -->
+    <div class="grain-overlay"></div>
+
+    <!-- Custom Cursor (Desktop only) -->
+    <div class="custom-cursor hidden md:block" id="cursor"></div>
+
+    <!-- Navigation -->
+    <nav
+      id="navbar"
+      class="fixed w-full z-50 transition-all duration-500 nav-hidden bg-cream/90 backdrop-blur-md border-b border-stone-200"
+    >
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a
+          href="index.html"
+          class="text-2xl font-serif font-bold tracking-widest text-charcoal hover:text-terracotta transition-colors"
+          >THE RED KEEP</a
+        >
+
+        <div class="hidden md:flex items-center space-x-8">
+          <a
+            href="index.html#rooms"
+            class="text-sm tracking-widest hover:text-terracotta transition-colors uppercase"
+            >Rooms</a
+          >
+          <a
+            href="menu.html"
+            class="text-sm tracking-widest text-terracotta uppercase"
+            >Menu</a
+          >
+          <a
+            href="index.html#experience"
+            class="text-sm tracking-widest hover:text-terracotta transition-colors uppercase"
+            >Experience</a
+          >
+          <a
+            href="index.html#gallery"
+            class="text-sm tracking-widest hover:text-terracotta transition-colors uppercase"
+            >Gallery</a
+          >
+          <button
+            onclick="window.location.href = 'index.html#booking'"
+            class="magnetic-btn px-6 py-3 bg-terracotta text-white text-sm tracking-widest uppercase hover:bg-terracotta-dark transition-colors"
+          >
+            <span>Book Table</span>
+          </button>
+        </div>
+
+        <button
+          id="menuBtn"
+          class="md:hidden w-10 h-10 flex flex-col justify-center items-center space-y-1.5"
+        >
+          <span class="w-6 h-0.5 bg-charcoal transition-all"></span>
+          <span class="w-6 h-0.5 bg-charcoal transition-all"></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobileMenu"
+      class="mobile-menu fixed inset-0 bg-charcoal z-40 flex flex-col items-center justify-center space-y-8 md:hidden"
+    >
+      <a
+        href="index.html"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Home</a
+      >
+      <a
+        href="index.html#rooms"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Rooms</a
+      >
+      <a href="menu.html" class="text-3xl font-serif text-terracotta">Menu</a>
+      <a
+        href="index.html#experience"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Experience</a
+      >
+      <a
+        href="index.html#gallery"
+        class="text-3xl font-serif text-cream hover:text-terracotta transition-colors"
+        >Gallery</a
+      >
+      <button
+        onclick="window.location.href = 'index.html#booking'"
+        class="mt-8 px-8 py-4 border border-terracotta text-terracotta text-lg tracking-widest uppercase"
+      >
+        Book Now
+      </button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-[70vh] w-full overflow-hidden bg-charcoal">
+      <div class="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80"
+          alt="Fine dining at The Red Keep"
+          class="w-full h-full object-cover opacity-60 hero-parallax"
+          id="heroImage"
+        />
+      </div>
+
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-charcoal/60 via-charcoal/40 to-cream"
+      ></div>
+
+      <div
+        class="relative z-10 h-full flex flex-col justify-center items-center text-center px-6"
+      >
+        <p
+          class="text-ochre text-sm tracking-[0.3em] uppercase mb-4 opacity-0"
+          id="heroSubtitle"
+        >
+          Culinary Excellence
+        </p>
+        <h1
+          class="font-serif text-6xl md:text-8xl lg:text-9xl text-cream mb-6 overflow-hidden"
+        >
+          <span id="heroTitle">THE MENU</span>
+        </h1>
+        <p
+          class="text-cream/80 text-lg md:text-xl max-w-2xl font-light leading-relaxed opacity-0"
+          id="heroDesc"
+        >
+          Farm-to-table cuisine celebrating the vibrant flavors of Uganda
+        </p>
+      </div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="py-20 px-6 bg-cream">
+      <div class="max-w-4xl mx-auto text-center">
+        <span
+          class="text-terracotta text-sm tracking-widest uppercase block mb-6 reveal-text"
+          >Philosophy</span
+        >
+        <h2
+          class="font-serif text-4xl md:text-5xl text-charcoal mb-8 leading-tight reveal-text"
+        >
+          From the Mountains of Rwenzori to the Shores of Lake Victoria
+        </h2>
+        <p class="text-lg text-earth leading-relaxed reveal-text">
+          Our culinary team works directly with local farmers, fishermen, and artisans
+          to bring you an authentic taste of Uganda. We honor traditional recipes
+          while embracing contemporary techniques, creating dishes that tell the story
+          of our land.
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-8 mt-12">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-sage"></span>
+            <span class="text-sm tracking-widest uppercase text-earth"
+              >Farm Fresh</span
+            >
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-terracotta"></span>
+            <span class="text-sm tracking-widest uppercase text-earth"
+              >Locally Sourced</span
+            >
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-ochre"></span>
+            <span class="text-sm tracking-widest uppercase text-earth">Seasonal</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Navigation -->
+    <div class="sticky-nav py-6 border-b border-stone-200">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+          <button
+            class="menu-tab active text-sm tracking-widest uppercase font-medium"
+            data-category="breakfast"
+          >
+            Breakfast
+          </button>
+          <button
+            class="menu-tab text-sm tracking-widest uppercase font-medium"
+            data-category="lunch"
+          >
+            Lunch
+          </button>
+          <button
+            class="menu-tab text-sm tracking-widest uppercase font-medium"
+            data-category="dinner"
+          >
+            Dinner
+          </button>
+          <button
+            class="menu-tab text-sm tracking-widest uppercase font-medium"
+            data-category="desserts"
+          >
+            Desserts
+          </button>
+          <button
+            class="menu-tab text-sm tracking-widest uppercase font-medium"
+            data-category="cocktails"
+          >
+            Cocktails
+          </button>
+          <button
+            class="menu-tab text-sm tracking-widest uppercase font-medium"
+            data-category="wine"
+          >
+            Wine
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Content -->
+    <section class="py-20 px-6 bg-cream min-h-screen">
+      <div class="max-w-5xl mx-auto">
+        <!-- BREAKFAST -->
+        <div class="menu-section active" id="breakfast">
+          <div class="grid md:grid-cols-2 gap-16">
+            <!-- Morning Starters -->
+            <div>
+              <h3
+                class="font-serif text-3xl text-charcoal mb-8 pb-4 border-b-2 border-terracotta inline-block"
+              >
+                Morning Starters
+              </h3>
+
+              <div class="space-y-8">
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Fresh Tropical Fruit Platter
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >18,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Seasonal selection of mango, pineapple, passion fruit, and Ugandan
+                    banana
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-vg">VG</span>
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Mandazi & Dipping Chocolate
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >15,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Cardamom-spiced doughnuts with house-made dark chocolate sauce
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-v">V</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Smoked Nile Perch Kedgeree
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >32,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Flaked fish, spiced rice, soft-boiled egg, and curry leaf oil
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main Breakfast -->
+            <div>
+              <h3
+                class="font-serif text-3xl text-charcoal mb-8 pb-4 border-b-2 border-terracotta inline-block"
+              >
+                Breakfast Mains
+              </h3>
+
+              <div class="space-y-8">
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      The Red Keep Full Breakfast
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >45,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Eggs any style, beef sausages, grilled tomato, mushrooms, beans,
+                    and chapati
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Katogo Royale
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >28,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Traditional matoke stew with groundnut sauce, served with poached
+                    eggs
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-vg">VG</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Rwenzori Pancakes
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >25,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Fluffy pancakes with honey butter, fresh berries, and vanilla
+                    mascarpone
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-v">V</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Avocado & Egg Toast
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >22,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Sourdough, smashed avocado, poached eggs, chili oil, and
+                    microgreens
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-v">V</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breakfast Beverages -->
+          <div class="mt-20 pt-12 border-t border-stone-200">
+            <h3 class="font-serif text-2xl text-charcoal mb-8 text-center">
+              Morning Beverages
+            </h3>
+            <div class="grid md:grid-cols-3 gap-8">
+              <div class="text-center">
+                <h4 class="font-serif text-lg mb-2">Ugandan Coffee</h4>
+                <p class="text-sm text-earth mb-2">Single origin from Mount Elgon</p>
+                <span class="text-terracotta">12,000 UGX</span>
+              </div>
+              <div class="text-center">
+                <h4 class="font-serif text-lg mb-2">Spiced Chai</h4>
+                <p class="text-sm text-earth mb-2">
+                  Masala tea with ginger and cardamom
+                </p>
+                <span class="text-terracotta">8,000 UGX</span>
+              </div>
+              <div class="text-center">
+                <h4 class="font-serif text-lg mb-2">Fresh Juice</h4>
+                <p class="text-sm text-earth mb-2">Orange, mango, or passion fruit</p>
+                <span class="text-terracotta">10,000 UGX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LUNCH -->
+        <div class="menu-section" id="lunch">
+          <div class="grid md:grid-cols-2 gap-16">
+            <!-- Light Bites -->
+            <div>
+              <h3
+                class="font-serif text-3xl text-charcoal mb-8 pb-4 border-b-2 border-terracotta inline-block"
+              >
+                Light Bites
+              </h3>
+
+              <div class="space-y-8">
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Nile Perch Ceviche
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >32,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Fresh tilapia cured in lime, chili, coriander, served with
+                    plantain chips
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Goat Samosas
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >22,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Crispy pastry filled with spiced minced goat, tamarind chutney
+                  </p>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Roasted Beet Salad
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >26,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Local beets, goat cheese, walnuts, honey dressing
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-v">V</span>
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lunch Mains -->
+            <div>
+              <h3
+                class="font-serif text-3xl text-charcoal mb-8 pb-4 border-b-2 border-terracotta inline-block"
+              >
+                Lunch Plates
+              </h3>
+
+              <div class="space-y-8">
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Grilled Tilapia
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >48,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Whole fish from Lake Victoria, kachumbari, ugali, and sautéed
+                    greens
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Chicken Luwombo
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >42,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Steamed chicken in banana leaves with peanut sauce and steamed
+                    matoke
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Vegetable Curry
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >35,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Seasonal vegetables in coconut curry, basmati rice, papadum
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-vg">VG</span>
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      The Keep Burger
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >38,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Beef patty, cheddar, caramelized onions, brioche bun, cassava
+                    fries
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DINNER -->
+        <div class="menu-section" id="dinner">
+          <div class="mb-16 text-center">
+            <span class="text-terracotta text-sm tracking-widest uppercase"
+              >Evening Service 6PM - 11PM</span
+            >
+            <h3 class="font-serif text-4xl text-charcoal mt-4">A Culinary Journey</h3>
+          </div>
+
+          <div class="space-y-16">
+            <!-- Starters -->
+            <div>
+              <h3
+                class="font-serif text-3xl text-charcoal mb-8 pb-4 border-b border-stone-200"
+              >
+                First Course
+              </h3>
+              <div class="grid md:grid-cols-2 gap-x-16 gap-y-8">
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Matoke & Oxtail Terrine
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >38,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Plantain mash, slow-braised oxtail, kachumbari relish
+                  </p>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Smoked Grasshopper Canapés
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >28,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Nsenene with avocado mousse on cassava crisp
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Pumpkin Soup
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >24,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Cream of butternut, toasted pumpkin seeds, chili oil
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-vg">VG</span>
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Beef Carpaccio
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >42,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Thinly sliced Ankole beef, truffle oil, parmesan, arugula
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mains -->
+            <div>
+              <h3
+                class="font-serif text-3xl text-charcoal mb-8 pb-4 border-b border-stone-200"
+              >
+                Main Course
+              </h3>
+              <div class="grid md:grid-cols-2 gap-x-16 gap-y-8">
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Roasted Goat Loin
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >68,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Groundnut sauce, sesame greens, sweet potato purée, chapati
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Nile Perch Fillet
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >72,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Pan-seared, coconut curry sauce, jasmine rice, bok choy
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Beef Fillet
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >85,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Grilled to preference, red wine reduction, roasted vegetables
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Mushroom Risotto
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >52,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Wild mushrooms, parmesan, truffle oil, herbs
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-v">V</span>
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sides -->
+            <div class="bg-stone-100 p-8 rounded-sm">
+              <h3 class="font-serif text-2xl text-charcoal mb-6">Accompaniments</h3>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="flex justify-between items-center">
+                  <span class="text-earth">Steamed Matoke</span>
+                  <span class="text-terracotta font-medium">12,000 UGX</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-earth">Ugali</span>
+                  <span class="text-terracotta font-medium">8,000 UGX</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-earth">Cassava Fries</span>
+                  <span class="text-terracotta font-medium">10,000 UGX</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-earth">Seasonal Vegetables</span>
+                  <span class="text-terracotta font-medium">15,000 UGX</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-earth">Chapati (2pcs)</span>
+                  <span class="text-terracotta font-medium">6,000 UGX</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-earth">Steamed Rice</span>
+                  <span class="text-terracotta font-medium">8,000 UGX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DESSERTS -->
+        <div class="menu-section" id="desserts">
+          <div class="grid md:grid-cols-2 gap-16">
+            <div>
+              <h3
+                class="font-serif text-3xl text-charcoal mb-8 pb-4 border-b-2 border-terracotta inline-block"
+              >
+                Sweet Endings
+              </h3>
+
+              <div class="space-y-8">
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Dark Chocolate Fondant
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >28,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Ugandan single-origin chocolate, vanilla ice cream
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-v">V</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Passion Fruit Crème Brûlée
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >26,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Classic custard with local passion fruit swirl
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Mango Sticky Rice
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >24,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Coconut sticky rice, fresh mango, sesame seeds
+                  </p>
+                  <div class="mt-2">
+                    <span class="dietary-badge badge-vg">VG</span>
+                    <span class="dietary-badge badge-gf">GF</span>
+                  </div>
+                </div>
+
+                <div class="menu-item pb-6 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-2">
+                    <h4
+                      class="font-serif text-xl group-hover:text-terracotta transition-colors"
+                    >
+                      Ugandan Coffee Tiramisu
+                    </h4>
+                    <span class="item-price text-terracotta font-medium"
+                      >30,000 UGX</span
+                    >
+                  </div>
+                  <p class="text-sm text-earth mt-1">
+                    Espresso-soaked ladyfingers, mascarpone, cocoa
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative">
+              <img
+                src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=800&q=80"
+                alt="Dessert presentation"
+                class="w-full h-full object-cover rounded-sm min-h-[400px]"
+              />
+              <div
+                class="absolute bottom-8 left-8 right-8 bg-cream/95 p-6 rounded-sm backdrop-blur-sm"
+              >
+                <p class="font-serif text-xl text-charcoal italic">
+                  "Life is short, eat dessert first."
+                </p>
+                <p class="text-sm text-earth mt-2">— Our pastry chef's philosophy</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cheese Selection -->
+          <div class="mt-16 pt-12 border-t border-stone-200">
+            <h3 class="font-serif text-2xl text-charcoal mb-8">
+              Artisan Cheese Selection
+            </h3>
+            <p class="text-earth mb-6">
+              Served with honeycomb, fig compote, and crackers
+            </p>
+            <div class="grid md:grid-cols-3 gap-6">
+              <div
+                class="flex justify-between items-center p-4 bg-stone-50 rounded-sm"
+              >
+                <div>
+                  <span class="block font-medium text-charcoal"
+                    >Local Goat Cheese</span
+                  >
+                  <span class="text-sm text-earth">Mbarara region</span>
+                </div>
+                <span class="text-terracotta font-medium">35,000 UGX</span>
+              </div>
+              <div
+                class="flex justify-between items-center p-4 bg-stone-50 rounded-sm"
+              >
+                <div>
+                  <span class="block font-medium text-charcoal">Aged Cheddar</span>
+                  <span class="text-sm text-earth">Uganda Creamery</span>
+                </div>
+                <span class="text-terracotta font-medium">32,000 UGX</span>
+              </div>
+              <div
+                class="flex justify-between items-center p-4 bg-stone-50 rounded-sm"
+              >
+                <div>
+                  <span class="block font-medium text-charcoal"
+                    >Selection of Three</span
+                  >
+                  <span class="text-sm text-earth">Chef's choice</span>
+                </div>
+                <span class="text-terracotta font-medium">48,000 UGX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COCKTAILS -->
+        <div class="menu-section" id="cocktails">
+          <div class="mb-12 text-center">
+            <h3 class="font-serif text-4xl text-charcoal mb-4">
+              Signature Cocktails
+            </h3>
+            <p class="text-earth max-w-2xl mx-auto">
+              Crafted with local spirits, fresh fruits, and East African botanicals
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Cocktail 1 -->
+            <div class="cocktail-card p-8 rounded-sm group cursor-pointer">
+              <div class="flex justify-between items-start mb-4">
+                <h4
+                  class="font-serif text-2xl text-charcoal group-hover:text-terracotta transition-colors"
+                >
+                  The Red Keep
+                </h4>
+                <span class="text-terracotta font-bold text-lg">28,000 UGX</span>
+              </div>
+              <p class="text-sm text-earth mb-4 leading-relaxed">
+                Ugandan Waragi gin, hibiscus syrup, fresh lime, tonic, rosemary
+              </p>
+              <div class="flex items-center text-xs text-earth">
+                <span class="w-2 h-2 rounded-full bg-terracotta mr-2"></span>
+                <span>Signature Serve</span>
+              </div>
+            </div>
+
+            <!-- Cocktail 2 -->
+            <div class="cocktail-card p-8 rounded-sm group cursor-pointer">
+              <div class="flex justify-between items-start mb-4">
+                <h4
+                  class="font-serif text-2xl text-charcoal group-hover:text-terracotta transition-colors"
+                >
+                  Nile Sunset
+                </h4>
+                <span class="text-terracotta font-bold text-lg">26,000 UGX</span>
+              </div>
+              <p class="text-sm text-earth mb-4 leading-relaxed">
+                Vodka, passion fruit, orange juice, grenadine, flaming orange peel
+              </p>
+              <div class="flex items-center text-xs text-earth">
+                <span class="w-2 h-2 rounded-full bg-ochre mr-2"></span>
+                <span>Sweet & Citrus</span>
+              </div>
+            </div>
+
+            <!-- Cocktail 3 -->
+            <div class="cocktail-card p-8 rounded-sm group cursor-pointer">
+              <div class="flex justify-between items-start mb-4">
+                <h4
+                  class="font-serif text-2xl text-charcoal group-hover:text-terracotta transition-colors"
+                >
+                  Rwenzori Mule
+                </h4>
+                <span class="text-terracotta font-bold text-lg">24,000 UGX</span>
+              </div>
+              <p class="text-sm text-earth mb-4 leading-relaxed">
+                Spiced rum, ginger beer, lime, aromatic bitters
+              </p>
+              <div class="flex items-center text-xs text-earth">
+                <span class="w-2 h-2 rounded-full bg-sage mr-2"></span>
+                <span>Spiced & Refreshing</span>
+              </div>
+            </div>
+
+            <!-- Cocktail 4 -->
+            <div class="cocktail-card p-8 rounded-sm group cursor-pointer">
+              <div class="flex justify-between items-start mb-4">
+                <h4
+                  class="font-serif text-2xl text-charcoal group-hover:text-terracotta transition-colors"
+                >
+                  Matoke Old Fashioned
+                </h4>
+                <span class="text-terracotta font-bold text-lg">32,000 UGX</span>
+              </div>
+              <p class="text-sm text-earth mb-4 leading-relaxed">
+                Banana-infused bourbon, maple syrup, angostura bitters, orange
+              </p>
+              <div class="flex items-center text-xs text-earth">
+                <span class="w-2 h-2 rounded-full bg-charcoal mr-2"></span>
+                <span>Bold & Smoky</span>
+              </div>
+            </div>
+
+            <!-- Cocktail 5 -->
+            <div class="cocktail-card p-8 rounded-sm group cursor-pointer">
+              <div class="flex justify-between items-start mb-4">
+                <h4
+                  class="font-serif text-2xl text-charcoal group-hover:text-terracotta transition-colors"
+                >
+                  Kampala Breeze
+                </h4>
+                <span class="text-terracotta font-bold text-lg">25,000 UGX</span>
+              </div>
+              <p class="text-sm text-earth mb-4 leading-relaxed">
+                White rum, coconut cream, pineapple, nutmeg
+              </p>
+              <div class="flex items-center text-xs text-earth">
+                <span class="w-2 h-2 rounded-full bg-ochre mr-2"></span>
+                <span>Tropical & Creamy</span>
+              </div>
+            </div>
+
+            <!-- Cocktail 6 -->
+            <div class="cocktail-card p-8 rounded-sm group cursor-pointer">
+              <div class="flex justify-between items-start mb-4">
+                <h4
+                  class="font-serif text-2xl text-charcoal group-hover:text-terracotta transition-colors"
+                >
+                  Ugandan Coffee Martini
+                </h4>
+                <span class="text-terracotta font-bold text-lg">30,000 UGX</span>
+              </div>
+              <p class="text-sm text-earth mb-4 leading-relaxed">
+                Vodka, espresso, coffee liqueur, vanilla syrup, coffee beans
+              </p>
+              <div class="flex items-center text-xs text-earth">
+                <span class="w-2 h-2 rounded-full bg-charcoal mr-2"></span>
+                <span>Rich & Energizing</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Non-Alcoholic -->
+          <div class="mt-16 pt-12 border-t border-stone-200">
+            <h3 class="font-serif text-2xl text-charcoal mb-8">
+              Mocktails & Fresh Pressed
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline">
+                  <h4
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Tropical Fizz
+                  </h4>
+                  <span class="text-terracotta">15,000 UGX</span>
+                </div>
+                <p class="text-sm text-earth mt-1">
+                  Pineapple, mango, lime, soda, mint
+                </p>
+              </div>
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline">
+                  <h4
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Hibiscus Cooler
+                  </h4>
+                  <span class="text-terracotta">12,000 UGX</span>
+                </div>
+                <p class="text-sm text-earth mt-1">
+                  Homemade hibiscus tea, ginger, lemon
+                </p>
+              </div>
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline">
+                  <h4
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Fresh Coconut Water
+                  </h4>
+                  <span class="text-terracotta">10,000 UGX</span>
+                </div>
+                <p class="text-sm text-earth mt-1">Served in shell with lime</p>
+              </div>
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline">
+                  <h4
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Ginger Zing
+                  </h4>
+                  <span class="text-terracotta">14,000 UGX</span>
+                </div>
+                <p class="text-sm text-earth mt-1">
+                  Fresh ginger, lime, honey, sparkling water
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WINE -->
+        <div class="menu-section" id="wine">
+          <div class="mb-12">
+            <h3 class="font-serif text-4xl text-charcoal mb-4">Wine Selection</h3>
+            <p class="text-earth">
+              Curated selection featuring South African estates and European classics
+            </p>
+          </div>
+
+          <!-- White Wine -->
+          <div class="mb-16">
+            <h4
+              class="font-serif text-2xl text-charcoal mb-8 pb-2 border-b border-stone-200"
+            >
+              White Wine
+            </h4>
+            <div class="space-y-6">
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline mb-1">
+                  <h5
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Sauvignon Blanc, Durbanville Hills
+                  </h5>
+                  <div class="text-right">
+                    <span class="text-terracotta block"
+                      >180,000 UGX
+                      <span class="text-xs text-earth">(Bottle)</span></span
+                    >
+                    <span class="text-earth text-sm"
+                      >32,000 UGX <span class="text-xs">(Glass)</span></span
+                    >
+                  </div>
+                </div>
+                <p class="wine-origin">Western Cape, South Africa</p>
+                <p class="text-sm text-earth mt-1">
+                  Crisp, tropical notes, citrus finish
+                </p>
+              </div>
+
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline mb-1">
+                  <h5
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Chardonnay, Bouchard Finlayson
+                  </h5>
+                  <div class="text-right">
+                    <span class="text-terracotta block"
+                      >220,000 UGX
+                      <span class="text-xs text-earth">(Bottle)</span></span
+                    >
+                    <span class="text-earth text-sm"
+                      >38,000 UGX <span class="text-xs">(Glass)</span></span
+                    >
+                  </div>
+                </div>
+                <p class="wine-origin">Hemel-en-Aarde, South Africa</p>
+                <p class="text-sm text-earth mt-1">
+                  Oaked, buttery, vanilla undertones
+                </p>
+              </div>
+
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline mb-1">
+                  <h5
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Pinot Grigio, Santa Margherita
+                  </h5>
+                  <div class="text-right">
+                    <span class="text-terracotta block"
+                      >195,000 UGX
+                      <span class="text-xs text-earth">(Bottle)</span></span
+                    >
+                    <span class="text-earth text-sm"
+                      >35,000 UGX <span class="text-xs">(Glass)</span></span
+                    >
+                  </div>
+                </div>
+                <p class="wine-origin">Alto Adige, Italy</p>
+                <p class="text-sm text-earth mt-1">Dry, mineral, green apple notes</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Red Wine -->
+          <div class="mb-16">
+            <h4
+              class="font-serif text-2xl text-charcoal mb-8 pb-2 border-b border-stone-200"
+            >
+              Red Wine
+            </h4>
+            <div class="space-y-6">
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline mb-1">
+                  <h5
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Cabernet Sauvignon, Jordan
+                  </h5>
+                  <div class="text-right">
+                    <span class="text-terracotta block"
+                      >240,000 UGX
+                      <span class="text-xs text-earth">(Bottle)</span></span
+                    >
+                    <span class="text-earth text-sm"
+                      >42,000 UGX <span class="text-xs">(Glass)</span></span
+                    >
+                  </div>
+                </div>
+                <p class="wine-origin">Stellenbosch, South Africa</p>
+                <p class="text-sm text-earth mt-1">
+                  Full-bodied, blackcurrant, tobacco notes
+                </p>
+              </div>
+
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline mb-1">
+                  <h5
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Pinot Noir, Hamilton Russell
+                  </h5>
+                  <div class="text-right">
+                    <span class="text-terracotta block"
+                      >280,000 UGX
+                      <span class="text-xs text-earth">(Bottle)</span></span
+                    >
+                    <span class="text-earth text-sm"
+                      >48,000 UGX <span class="text-xs">(Glass)</span></span
+                    >
+                  </div>
+                </div>
+                <p class="wine-origin">Hemel-en-Aarde, South Africa</p>
+                <p class="text-sm text-earth mt-1">
+                  Elegant, cherry, earthy complexity
+                </p>
+              </div>
+
+              <div class="menu-item pb-4 cursor-pointer group">
+                <div class="flex justify-between items-baseline mb-1">
+                  <h5
+                    class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                  >
+                    Shiraz, Waterford
+                  </h5>
+                  <div class="text-right">
+                    <span class="text-terracotta block"
+                      >210,000 UGX
+                      <span class="text-xs text-earth">(Bottle)</span></span
+                    >
+                    <span class="text-earth text-sm"
+                      >38,000 UGX <span class="text-xs">(Glass)</span></span
+                    >
+                  </div>
+                </div>
+                <p class="wine-origin">Stellenbosch, South Africa</p>
+                <p class="text-sm text-earth mt-1">Spicy, pepper, dark fruit</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sparkling & Rose -->
+          <div class="grid md:grid-cols-2 gap-12">
+            <div>
+              <h4
+                class="font-serif text-2xl text-charcoal mb-8 pb-2 border-b border-stone-200"
+              >
+                Sparkling
+              </h4>
+              <div class="space-y-6">
+                <div class="menu-item pb-4 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-1">
+                    <h5
+                      class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                    >
+                      Graham Beck Brut
+                    </h5>
+                    <span class="text-terracotta block">195,000 UGX</span>
+                  </div>
+                  <p class="wine-origin">Western Cape, South Africa</p>
+                  <p class="text-sm text-earth mt-1">
+                    Method Cap Classique, crisp, biscuity
+                  </p>
+                </div>
+                <div class="menu-item pb-4 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-1">
+                    <h5
+                      class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                    >
+                      Prosecco, La Marca
+                    </h5>
+                    <span class="text-terracotta block">165,000 UGX</span>
+                  </div>
+                  <p class="wine-origin">Veneto, Italy</p>
+                  <p class="text-sm text-earth mt-1">Light, fruity, floral</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4
+                class="font-serif text-2xl text-charcoal mb-8 pb-2 border-b border-stone-200"
+              >
+                Rosé
+              </h4>
+              <div class="space-y-6">
+                <div class="menu-item pb-4 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-1">
+                    <h5
+                      class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                    >
+                      Miraval Rosé
+                    </h5>
+                    <span class="text-terracotta block">220,000 UGX</span>
+                  </div>
+                  <p class="wine-origin">Provence, France</p>
+                  <p class="text-sm text-earth mt-1">Pale, dry, strawberry notes</p>
+                </div>
+                <div class="menu-item pb-4 cursor-pointer group">
+                  <div class="flex justify-between items-baseline mb-1">
+                    <h5
+                      class="font-serif text-lg group-hover:text-terracotta transition-colors"
+                    >
+                      Boschendal Rosé
+                    </h5>
+                    <span class="text-terracotta block">175,000 UGX</span>
+                  </div>
+                  <p class="wine-origin">Western Cape, South Africa</p>
+                  <p class="text-sm text-earth mt-1">
+                    Fresh, watermelon, crisp acidity
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reservation CTA -->
+    <section class="py-24 px-6 bg-charcoal text-cream relative overflow-hidden">
+      <div class="absolute inset-0 opacity-20">
+        <img
+          src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=1920&q=80"
+          alt="Bar atmosphere"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div class="max-w-4xl mx-auto text-center relative z-10">
+        <h2 class="font-serif text-5xl md:text-6xl mb-6">Reserve Your Table</h2>
+        <p class="text-cream/80 text-lg mb-8 max-w-2xl mx-auto">
+          Join us for an unforgettable dining experience. For groups larger than 8,
+          please contact us directly for special arrangements.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onclick="window.location.href = 'index.html#booking'"
+            class="px-8 py-4 bg-terracotta text-white tracking-widest uppercase hover:bg-terracotta-dark transition-colors"
+          >
+            Book Now
+          </button>
+          <a
+            href="tel:+256123456789"
+            class="px-8 py-4 border border-cream text-cream tracking-widest uppercase hover:bg-cream hover:text-charcoal transition-colors"
+          >
+            Call +256 123 456 789
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-cream py-16 px-6 border-t border-cream/10">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+          <div class="md:col-span-2">
+            <h3 class="font-serif text-3xl mb-4">THE RED KEEP</h3>
+            <p class="text-cream/60 max-w-md">
+              A boutique motel and restaurant offering authentic Ugandan hospitality
+              with contemporary luxury in the heart of Kampala.
+            </p>
+          </div>
+          <div>
+            <h4 class="text-sm tracking-widest uppercase mb-4 text-terracotta">
+              Hours
+            </h4>
+            <p class="text-cream/60 text-sm leading-relaxed">
+              Breakfast: 6:30 AM - 10:30 AM<br />
+              Lunch: 12:00 PM - 3:00 PM<br />
+              Dinner: 6:00 PM - 11:00 PM<br />
+              Bar: 11:00 AM - 12:00 AM
+            </p>
+          </div>
+          <div>
+            <h4 class="text-sm tracking-widest uppercase mb-4 text-terracotta">
+              Contact
+            </h4>
+            <p class="text-cream/60 text-sm leading-relaxed">
+              Plot 42, Nakasero Road<br />
+              Kampala, Uganda<br />
+              reservations@theredkeep.ug<br />
+              +256 123 456 789
+            </p>
+          </div>
+        </div>
+        <div
+          class="border-t border-cream/10 pt-8 flex flex-col md:flex-row justify-between items-center"
+        >
+          <p class="text-cream/40 text-sm">
+            &copy; 2024 The Red Keep. All rights reserved.
+          </p>
+          <div class="flex space-x-6 mt-4 md:mt-0">
+            <a
+              href="#"
+              class="text-cream/40 text-sm hover:text-terracotta transition-colors"
+              >Privacy Policy</a
+            >
+            <a
+              href="#"
+              class="text-cream/40 text-sm hover:text-terracotta transition-colors"
+              >Terms of Service</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Initialize GSAP
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Loading Screen
+      window.addEventListener("load", () => {
+        const loader = document.getElementById("loader");
+        gsap.to(loader, {
+          opacity: 0,
+          duration: 1,
+          delay: 0.5,
+          onComplete: () => {
+            loader.style.display = "none";
+            initAnimations();
+          },
+        });
+      });
+
+      function initAnimations() {
+        // Hero Animations
+        gsap.to("#heroSubtitle", { opacity: 1, y: 0, duration: 1, delay: 0.2 });
+        gsap.to("#heroTitle", { opacity: 1, duration: 1.5, delay: 0.5 });
+        gsap.to("#heroDesc", { opacity: 1, y: 0, duration: 1, delay: 0.8 });
+
+        // Hero Parallax
+        gsap.to("#heroImage", {
+          scrollTrigger: {
+            trigger: "body",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+          y: 100,
+          scale: 1.1,
+        });
+
+        // Text Reveals
+        gsap.utils.toArray(".reveal-text").forEach((text) => {
+          gsap.from(text, {
+            scrollTrigger: {
+              trigger: text,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out",
+          });
+        });
+
+        // Scroll Progress
+        gsap.to("#scrollProgress", {
+          scrollTrigger: {
+            trigger: "body",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.3,
+          },
+          scaleX: 1,
+          ease: "none",
+        });
+      }
+
+      // Navigation Scroll Effect
+      let lastScroll = 0;
+      const navbar = document.getElementById("navbar");
+
+      window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 100) {
+          navbar.classList.remove("nav-hidden");
+          navbar.classList.add("nav-visible");
+        } else {
+          navbar.classList.add("nav-hidden");
+          navbar.classList.remove("nav-visible");
+        }
+
+        lastScroll = currentScroll;
+      });
+
+      // Custom Cursor
+      const cursor = document.getElementById("cursor");
+      const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+
+      if (!isTouchDevice && cursor) {
+        document.addEventListener("mousemove", (e) => {
+          cursor.style.left = e.clientX + "px";
+          cursor.style.top = e.clientY + "px";
+        });
+
+        document
+          .querySelectorAll("a, button, .menu-item, .cocktail-card")
+          .forEach((el) => {
+            el.addEventListener("mouseenter", () => cursor.classList.add("hover"));
+            el.addEventListener("mouseleave", () => cursor.classList.remove("hover"));
+          });
+      }
+
+      // Mobile Menu
+      const menuBtn = document.getElementById("menuBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+      let menuOpen = false;
+
+      function toggleMobileMenu() {
+        menuOpen = !menuOpen;
+        if (menuOpen) {
+          mobileMenu.classList.add("active");
+          menuBtn.children[0].style.transform = "rotate(45deg) translate(5px, 5px)";
+          menuBtn.children[1].style.transform = "rotate(-45deg) translate(0px, 0px)";
+        } else {
+          mobileMenu.classList.remove("active");
+          menuBtn.children[0].style.transform = "none";
+          menuBtn.children[1].style.transform = "none";
+        }
+      }
+
+      menuBtn.addEventListener("click", toggleMobileMenu);
+
+      // Menu Category Switching
+      const menuTabs = document.querySelectorAll(".menu-tab");
+      const menuSections = document.querySelectorAll(".menu-section");
+
+      menuTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const category = tab.dataset.category;
+
+          // Update active tab
+          menuTabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          // Switch sections with animation
+          menuSections.forEach((section) => {
+            if (section.id === category) {
+              section.style.display = "block";
+              setTimeout(() => {
+                section.classList.add("active");
+              }, 50);
+            } else {
+              section.classList.remove("active");
+              setTimeout(() => {
+                if (!section.classList.contains("active")) {
+                  section.style.display = "none";
+                }
+              }, 600);
+            }
+          });
+
+          // Scroll to menu content on mobile
+          if (window.innerWidth < 768) {
+            document
+              .querySelector(".sticky-nav")
+              .scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
+
+      // Smooth Scroll for Anchor Links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            if (menuOpen) toggleMobileMenu();
+          }
+        });
+      });
+
+      // Price Hover Effect Enhancement
+      document.querySelectorAll(".menu-item").forEach((item) => {
+        item.addEventListener("mouseenter", () => {
+          const price = item.querySelector(".item-price");
+          if (price) price.classList.add("price-highlight");
+        });
+        item.addEventListener("mouseleave", () => {
+          const price = item.querySelector(".item-price");
+          if (price) price.classList.remove("price-highlight");
+        });
+      });
+    </script>
+  </body>
+</html>
