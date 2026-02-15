@@ -1,0 +1,122 @@
+/* Hero Text Animation */
+.char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100px);
+}
+
+/* Magnetic Button */
+.magnetic-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.magnetic-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: var(--terracotta);
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.6s,
+    height 0.6s;
+}
+
+.magnetic-btn:hover::before {
+  width: 300%;
+  height: 300%;
+}
+
+.magnetic-btn span {
+  position: relative;
+  z-index: 1;
+  transition: color 0.4s;
+}
+
+.magnetic-btn:hover span {
+  color: white;
+}
+
+/* Room Card Hover */
+.room-card {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.room-card:hover {
+  transform: translateY(-10px);
+}
+
+.room-card .room-img {
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.room-card:hover .room-img {
+  transform: scale(1.1);
+}
+
+/* Scroll Indicator */
+.scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--terracotta), transparent);
+  animation: scrollPulse 2s infinite;
+}
+
+@keyframes scrollPulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(10px);
+  }
+}
+
+/* Menu Item Hover */
+.menu-item {
+  transition: all 0.4s;
+  border-bottom: 1px solid rgba(44, 36, 32, 0.1);
+}
+
+.menu-item:hover {
+  padding-left: 20px;
+  border-bottom-color: var(--terracotta);
+}
+
+/* Image Reveal */
+.img-reveal {
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.img-reveal.revealed {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Text Scramble Effect */
+.scramble-text {
+  display: inline-block;
+}
+
+/* Parallax Container */
+.parallax-container {
+  overflow: hidden;
+  position: relative;
+}
+
+/* Booking Widget */
+.booking-widget {
+  backdrop-filter: blur(10px);
+  background: rgba(245, 241, 232, 0.9);
+  border: 1px solid rgba(198, 93, 59, 0.2);
+}

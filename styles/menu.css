@@ -1,0 +1,181 @@
+/* Menu Category Tabs */
+.menu-tab {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.menu-tab::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--terracotta);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.menu-tab.active::after,
+.menu-tab:hover::after {
+  width: 100%;
+}
+
+.menu-tab.active {
+  color: var(--terracotta);
+}
+
+/* Menu Item Styling */
+.menu-item {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-bottom: 1px solid rgba(44, 36, 32, 0.1);
+}
+
+.menu-item::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: var(--terracotta);
+  transform: scaleY(0);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.menu-item:hover {
+  padding-left: 20px;
+  background: rgba(198, 93, 59, 0.03);
+}
+
+.menu-item:hover::before {
+  transform: scaleY(1);
+}
+
+.menu-item:hover .item-name {
+  color: var(--terracotta);
+}
+
+.menu-item:hover .item-price {
+  transform: scale(1.1);
+}
+
+.item-price {
+  transition: transform 0.3s;
+  display: inline-block;
+}
+
+/* Dietary Badges */
+.dietary-badge {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: 12px;
+  margin-left: 8px;
+  font-weight: 600;
+}
+
+.badge-vg {
+  color: var(--sage);
+  border-color: var(--sage);
+}
+.badge-v {
+  color: var(--ochre);
+  border-color: var(--ochre);
+}
+.badge-gf {
+  color: var(--terracotta);
+  border-color: var(--terracotta);
+}
+
+/* Wine List Styling */
+.wine-origin {
+  font-style: italic;
+  color: var(--earth);
+  font-size: 0.9rem;
+}
+
+/* Cocktail Card */
+.cocktail-card {
+  background: linear-gradient(
+    135deg,
+    rgba(198, 93, 59, 0.05) 0%,
+    rgba(212, 163, 115, 0.05) 100%
+  );
+  border: 1px solid rgba(198, 93, 59, 0.2);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cocktail-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(44, 36, 32, 0.1);
+  border-color: var(--terracotta);
+}
+
+/* Parallax Hero */
+.hero-parallax {
+  transform: translateY(0);
+  will-change: transform;
+}
+
+/* Text Reveal Animation */
+.reveal-text {
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+}
+
+.reveal-text.revealed {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Section Transition */
+.menu-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: none;
+}
+
+.menu-section.active {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+/* Price Animation */
+@keyframes pricePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.price-highlight {
+  animation: pricePulse 2s infinite;
+}
+
+/* Scroll Progress */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--terracotta);
+  z-index: 10001;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* Sticky Category Nav */
+.sticky-nav {
+  position: sticky;
+  top: 80px;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  background: rgba(245, 241, 232, 0.9);
+}

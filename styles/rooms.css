@@ -1,0 +1,99 @@
+.room-card {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.room-card:hover {
+  transform: translateY(-10px);
+}
+
+.room-image-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.room-image {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.room-card:hover .room-image {
+  transform: scale(1.1);
+}
+
+.amenity-icon {
+  transition: all 0.3s;
+}
+
+.amenity-icon:hover {
+  color: var(--terracotta);
+  transform: translateY(-3px);
+}
+
+.booking-panel {
+  backdrop-filter: blur(20px);
+  background: rgba(245, 241, 232, 0.95);
+  border-left: 1px solid rgba(198, 93, 59, 0.2);
+}
+
+.date-input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--charcoal);
+  padding: 8px 0;
+  width: 100%;
+  font-family: "Montserrat", sans-serif;
+  transition: border-color 0.3s;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--terracotta);
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(44, 36, 32, 0.1);
+}
+
+.comparison-table th {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.25rem;
+  color: var(--charcoal);
+}
+
+.check-mark {
+  color: var(--sage);
+  font-weight: bold;
+}
+
+.gallery-thumb {
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.6;
+}
+
+.gallery-thumb:hover,
+.gallery-thumb.active {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+.sticky-booking {
+  position: sticky;
+  top: 100px;
+}
