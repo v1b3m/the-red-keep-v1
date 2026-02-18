@@ -8,7 +8,7 @@ const roomData = {
     view: "Valley & Hills",
     price: "$180",
     images: [
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",
+      "assets/room-1.jpeg",
       "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80",
       "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80",
       "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80",
